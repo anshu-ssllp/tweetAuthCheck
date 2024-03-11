@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Twitter Login</title>
+</head>
+<body>
+  <button id="twitter-login">Login with Twitter</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    function handleTwitterLogin() {
+      // Twitter API configuration
+      const clientId = 'TUNiaXJ1VWhUOU5WZGV4RnBTZG06MTpjaQ';
+      const redirectUri = 'http://seeksolution.in'; // Should be whitelisted in your Twitter app settings
+      const authUrl = `https://api.twitter.com/oauth/authenticate?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token`;
+
+      // Redirect user to Twitter's authorization URL
+      window.location.href = authUrl;
+    }
+
+    function handleCallback() {
+      // Parse access token from URL fragment
+      const accessToken = window.location.hash.substring(1)
+        .split('&')
+        .map(kv => kv.split('='))
+        .find(([key]) => key === 'access_token');
+
+      if (accessToken) {
+        // Extract the access token value
+        const [, token] = accessToken;
+        
+        // Use the access token to make authenticated requests
+        console.log('Access Token:', token);
+
+        // Now you can make requests to the Twitter API using this access token
+      } else {
+        console.error('Access token not found in URL');
+      }
+    }
+
+    // Check if the page loaded from a Twitter redirect (callback)
+    if (window.location.hash.startsWith('#access_token=')) {
+      handleCallback();
+    }
+
+    // Add click event listener to the login button
+    document.getElementById('twitter-login').addEventListener('click', handleTwitterLogin);
+  </script>
+</body>
+</html>
